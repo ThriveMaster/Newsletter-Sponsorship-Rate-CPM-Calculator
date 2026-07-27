@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Newsletter Sponsorship Rate & CPM Calculator</title>
+    <!-- Tailwind CSS for modern design system -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Inter Font for executive legibility -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Chart.js for responsive visual benchmarking -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Custom scrollbar styling for clean embeds */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #4b5563;
+            border-radius: 999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #6b7280;
+        }
+    </style>
+</head>
+<body class="bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 min-h-screen p-4 md:p-6 transition-colors duration-300">
+
+    <div class="max-w-6xl mx-auto bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-2xl overflow-hidden transition-all">
+        
+        <!-- Top Branded Header -->
+        <div class="bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-700 p-6 text-white relative">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div class="flex items-center gap-3">
+                    <span class="text-3xl">📧</span>
+                    <div>
+                        <h1 class="text-xl md:text-2xl font-extrabold tracking-tight">Newsletter Sponsorship Rate & CPM Calculator</h1>
+                        <p class="text-indigo-100 text-xs md:text-sm mt-0.5">Benchmark ad pricing, calculate CPM rates, and model annual sponsorship revenue.</p>
+                    </div>
+                </div>
+                <!-- Theme Mode Toggle -->
+                <button id="theme-toggle" class="self-start sm:self-auto bg-indigo-700/50 hover:bg-indigo-700/80 px-3 py-1.5 rounded-lg text-xs font-semibold border border-indigo-400/30 transition-all flex items-center gap-1.5">
+                    <span id="theme-icon">☀️</span> <span id="theme-text">Light Mode</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Content Split Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 divide-y lg:divide-y-0 lg:divide-x divide-zinc-200 dark:divide-zinc-800">
+            
+            <!-- Left Input Column (5 cols) -->
+            <div class="p-6 lg:col-span-5 flex flex-col gap-5 bg-zinc-50/50 dark:bg-zinc-900/40">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider">Newsletter Metrics</span>
+                    <button id="btn-reset" class="text-xs text-indigo-600 dark:text-indigo-400 hover:underline font-medium">Reset Values</button>
+                </div>
+
+                <!-- Input 1: Active Subscribers -->
+                <div class="flex flex-col gap-2">
+                    <div class="flex justify-between items-center text-xs font-semibold">
+                        <label for="slider-subs" class="text-zinc-700 dark:text-zinc-300 flex items-center gap-1.5">
+                            <span>👥</span> Active Email Subscribers
+                        </label>
+                        <span id="val-subs-display" class="text-indigo-600 dark:text-indigo-400 font-bold">25,000</span>
+                    </div>
+                    <input type="range" id="slider-subs" min="1000" max="250000" step="1000" value="25000" class="w-full h-1.5 bg-zinc-200 dark:bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-indigo-600">
+                    <div class="flex justify-between text-[10px] text-zinc-400">
+                        <span>1,000</span>
+                        <span>100,000</span>
+                        <span>250,000+</span>
+                    </div>
+                </div>
+
+                <!-- Input 2: Average Open Rate % -->
+                <div class="flex flex-col gap-2">
+                    <div class="flex justify-between items-center text-xs font-semibold">
+                        <label for="slider-open" class="text-zinc-700 dark:text-zinc-300 flex items-center gap-1.5">
+                            <span>📬</span> Average Open Rate (%)
+                        </label>
+                        <span id="val-open-display" class="text-indigo-600 dark:text-indigo-400 font-bold">45.0%</span>
+                    </div>
+                    <input type="range" id="slider-open" min="10" max="80" step="0.5" value="45" class="w-full h-1.5 bg-zinc-200 dark:bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-indigo-600">
+                    <div class="flex justify-between text-[10px] text-zinc-400">
+                        <span>10% (Low)</span>
+                        <span>40% (Good)</span>
+                        <span>70%+ (Elite)</span>
+                    </div>
+                </div>
+
+                <!-- Input 3: Industry Niche / Tier -->
+                <div class="flex flex-col gap-1.5">
+                    <label for="select-niche" class="text-xs font-semibold text-zinc-700 dark:text-zinc-300 flex items-center gap-1.5">
+                        <span>🎯</span> Industry Niche (CPM Baseline)
+                    </label>
+                    <select id="select-niche" class="w-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 font-medium cursor-pointer">
+                        <option value="tech_finance" selected>Tech / Finance / Crypto ($50 Dedicated / $35 Main CPM)</option>
+                        <option value="b2b_marketing">B2B / Marketing / SaaS ($40 Dedicated / $25 Main CPM)</option>
+                        <option value="health_productivity">Health / Fitness / Productivity ($30 Dedicated / $20 Main CPM)</option>
+                        <option value="lifestyle_general">General Consumer / Lifestyle ($20 Dedicated / $12 Main CPM)</option>
+                        <option value="custom">Custom CPM Parameters</option>
+                    </select>
+                </div>
+
+                <!-- Custom CPM Inputs (Hidden unless Custom is selected) -->
+                <div id="custom-cpm-box" class="hidden p-3 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 grid grid-cols-2 gap-3 shadow-inner">
+                    <div class="flex flex-col gap-1">
+                        <label for="input-custom-cpm" class="text-[10px] font-semibold text-zinc-500 uppercase">Dedicated CPM ($)</label>
+                        <input type="number" id="input-custom-cpm" value="45" min="5" max="200" class="bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg py-1 px-2 text-xs font-medium focus:outline-none focus:ring-1 focus:ring-indigo-500">
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <label for="input-custom-main-cpm" class="text-[10px] font-semibold text-zinc-500 uppercase">Main Sponsor CPM ($)</label>
+                        <input type="number" id="input-custom-main-cpm" value="30" min="5" max="150" class="bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg py-1 px-2 text-xs font-medium focus:outline-none focus:ring-1 focus:ring-indigo-500">
+                    </div>
+                </div>
+
+                <!-- Input 4: Publishing Velocity -->
+                <div class="grid grid-cols-2 gap-3 p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/60 shadow-inner">
+                    <div class="flex flex-col gap-1">
+                        <label for="input-freq" class="text-[11px] font-semibold text-zinc-500 uppercase">Issues / Month</label>
+                        <input type="number" id="input-freq" value="4" min="1" max="30" class="bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg py-1.5 px-3 text-sm font-bold text-indigo-600 dark:text-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <label for="input-slots" class="text-[11px] font-semibold text-zinc-500 uppercase">Ad Slots / Issue</label>
+                        <input type="number" id="input-slots" value="2" min="1" max="5" class="bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg py-1.5 px-3 text-sm font-bold text-indigo-600 dark:text-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    </div>
+                </div>
+
+                <!-- Quick Formula Anchor -->
+                <div class="p-3 rounded-xl bg-indigo-500/5 border border-indigo-500/20 text-center">
+                    <p class="text-[11px] text-zinc-500 dark:text-zinc-400 leading-relaxed">
+                        <strong class="text-indigo-600 dark:text-indigo-400 font-semibold">Core Pricing Formula:</strong><br>
+                        <code class="font-mono text-[10px] bg-zinc-200 dark:bg-zinc-800 px-1.5 py-0.5 rounded">Ad Price = (Subscribers × Open Rate × CPM) / 1,000</code>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Right Output Column (7 cols) -->
+            <div class="p-6 lg:col-span-7 flex flex-col justify-between gap-6 bg-white dark:bg-zinc-900">
+                <div class="flex flex-col gap-6">
+                    
+                    <!-- Projected Audience Reach Summary -->
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                        <div class="p-3.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-800/30 flex flex-col gap-0.5">
+                            <span class="text-[10px] uppercase font-bold text-zinc-400 tracking-wider">Estimated Opens</span>
+                            <span id="stat-opens" class="text-lg font-extrabold text-zinc-800 dark:text-zinc-100">11,250</span>
+                        </div>
+                        <div class="p-3.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-800/30 flex flex-col gap-0.5">
+                            <span class="text-[10px] uppercase font-bold text-zinc-400 tracking-wider">Effective CPM</span>
+                            <span id="stat-cpm" class="text-lg font-extrabold text-indigo-600 dark:text-indigo-400">$35.00</span>
+                        </div>
+                        <div class="p-3.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-800/30 flex flex-col gap-0.5 col-span-2 sm:col-span-1">
+                            <span class="text-[10px] uppercase font-bold text-zinc-400 tracking-wider">Est. Value / Sub</span>
+                            <span id="stat-val-sub" class="text-lg font-extrabold text-emerald-600 dark:text-emerald-400">$0.67 / yr</span>
+                        </div>
+                    </div>
+
+                    <!-- Recommended Ad Tier Rate Cards -->
+                    <div class="flex flex-col gap-3">
+                        <span class="text-xs font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider">Recommended Rate Card Pricing</span>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            
+                            <!-- Tier A: Dedicated Email -->
+                            <div class="p-4 rounded-xl border border-indigo-500/30 bg-indigo-500/5 flex flex-col justify-between gap-2 relative overflow-hidden">
+                                <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 self-start">Dedicated Blast</span>
+                                <div>
+                                    <div id="rate-dedicated" class="text-2xl font-extrabold text-zinc-800 dark:text-zinc-100">$563</div>
+                                    <span class="text-[10px] text-zinc-500">100% Share of Voice</span>
+                                </div>
+                            </div>
+
+                            <!-- Tier B: Primary Main Sponsor -->
+                            <div class="p-4 rounded-xl border border-emerald-500/30 bg-emerald-500/5 flex flex-col justify-between gap-2 relative overflow-hidden">
+                                <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 self-start">Main Sponsor</span>
+                                <div>
+                                    <div id="rate-main" class="text-2xl font-extrabold text-zinc-800 dark:text-zinc-100">$394</div>
+                                    <span class="text-[10px] text-zinc-500">Top Header + Logo</span>
+                                </div>
+                            </div>
+
+                            <!-- Tier C: Secondary / Text Link -->
+                            <div class="p-4 rounded-xl border border-amber-500/30 bg-amber-500/5 flex flex-col justify-between gap-2 relative overflow-hidden">
+                                <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 self-start">Secondary Insert</span>
+                                <div>
+                                    <div id="rate-secondary" class="text-2xl font-extrabold text-zinc-800 dark:text-zinc-100">$169</div>
+                                    <span class="text-[10px] text-zinc-500">Footer Text / Classified</span>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- Annualized Revenue Forecast Banner -->
+                    <div class="p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-200 dark:border-zinc-800 flex flex-col sm:flex-row items-center justify-between gap-3">
+                        <div class="flex flex-col gap-0.5 text-center sm:text-left">
+                            <span class="text-xs font-semibold text-zinc-500 uppercase tracking-wider">Annual Ad Revenue Potential</span>
+                            <span class="text-[11px] text-zinc-400">Based on <span id="summary-issues">4</span> issues/mo with <span id="summary-slots">2</span> sponsors per issue</span>
+                        </div>
+                        <div id="stat-annual-rev" class="text-2xl sm:text-3xl font-extrabold text-emerald-600 dark:text-emerald-400">$27,000</div>
+                    </div>
+
+                    <!-- Subscriber Scaling Chart -->
+                    <div class="flex flex-col gap-2">
+                        <span class="text-xs font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider">Revenue Potential vs. Subscriber Growth</span>
+                        <div class="h-44 w-full relative">
+                            <canvas id="growth-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Copy Action Controls -->
+                <div class="flex flex-col gap-2.5 pt-4 border-t border-dashed border-zinc-200 dark:border-zinc-800">
+                    <button id="btn-copy" class="w-full bg-indigo-600 hover:bg-indigo-700 active:scale-[0.98] text-white font-bold rounded-xl py-3 px-4 shadow-md transition-all flex items-center justify-center gap-2">
+                        <span>📋</span> Copy Media Kit Rate Card (Markdown)
+                    </button>
+                    <p class="text-[10px] text-zinc-400 text-center leading-normal">Instantly copy formatted sponsorship pricing to send directly to prospective advertisers and agencies.</p>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Notification Toast Container -->
+    <div id="toast" class="fixed bottom-5 right-5 bg-emerald-600 text-white font-semibold px-4 py-3 rounded-xl shadow-xl transform translate-y-20 opacity-0 transition-all duration-300 flex items-center gap-2 z-50 text-sm">
+        <span id="toast-icon">✅</span>
+        <span id="toast-message">Rate Card Copied to Clipboard!</span>
+    </div>
+
+    <script>
+        // Industry CPM Benchmarks Data Matrix
+        const CPM_PRESETS = {
+            tech_finance: { dedicated: 50, main: 35, secondary: 15 },
+            b2b_marketing: { dedicated: 40, main: 25, secondary: 12 },
+            health_productivity: { dedicated: 30, main: 20, secondary: 10 },
+            lifestyle_general: { dedicated: 20, main: 12, secondary: 6 }
+        };
+
+        // DOM Element Mapping
+        const sliderSubs = document.getElementById("slider-subs");
+        const sliderOpen = document.getElementById("slider-open");
+        const selectNiche = document.getElementById("select-niche");
+        const inputFreq = document.getElementById("input-freq");
+        const inputSlots = document.getElementById("input-slots");
+
+        const customCpmBox = document.getElementById("custom-cpm-box");
+        const inputCustomCpm = document.getElementById("input-custom-cpm");
+        const inputCustomMainCpm = document.getElementById("input-custom-main-cpm");
+
+        const valSubsDisplay = document.getElementById("val-subs-display");
+        const valOpenDisplay = document.getElementById("val-open-display");
+
+        const statOpens = document.getElementById("stat-opens");
+        const statCpm = document.getElementById("stat-cpm");
+        const statValSub = document.getElementById("stat-val-sub");
+
+        const rateDedicated = document.getElementById("rate-dedicated");
+        const rateMain = document.getElementById("rate-main");
+        const rateSecondary = document.getElementById("rate-secondary");
+
+        const statAnnualRev = document.getElementById("stat-annual-rev");
+        const summaryIssues = document.getElementById("summary-issues");
+        const summarySlots = document.getElementById("summary-slots");
+
+        const btnReset = document.getElementById("btn-reset");
+        const btnCopy = document.getElementById("btn-copy");
+        const themeToggle = document.getElementById("theme-toggle");
+        const themeIcon = document.getElementById("theme-icon");
+        const themeText = document.getElementById("theme-text");
+        const toast = document.getElementById("toast");
+
+        let growthChart = null;
+
+        // Theme Switcher Engine
+        themeToggle.addEventListener("click", () => {
+            document.documentElement.classList.toggle("dark");
+            const isDark = document.documentElement.classList.contains("dark");
+            themeIcon.textContent = isDark ? "☀️" : "🌙";
+            themeText.textContent = isDark ? "Light Mode" : "Dark Mode";
+            updateChartTheme();
+        });
+
+        // Safe Toast Alert Trigger (No alert() used)
+        const triggerToast = (msg, icon = "✅") => {
+            document.getElementById("toast-message").textContent = msg;
+            document.getElementById("toast-icon").textContent = icon;
+            toast.classList.remove("translate-y-20", "opacity-0");
+            toast.classList.add("translate-y-0", "opacity-100");
+            setTimeout(() => {
+                toast.classList.remove("translate-y-0", "opacity-100");
+                toast.classList.add("translate-y-20", "opacity-0");
+            }, 3000);
+        };
+
+        // Core Mathematical Rate Calculation Engine
+        const calculateRates = () => {
+            const subs = parseInt(sliderSubs.value) || 1000;
+            const openRate = parseFloat(sliderOpen.value) || 10;
+            const nicheKey = selectNiche.value;
+            const issuesPerMonth = parseInt(inputFreq.value) || 1;
+            const slotsPerIssue = parseInt(inputSlots.value) || 1;
+
+            // Toggle Custom Inputs Visibility
+            if (nicheKey === "custom") {
+                customCpmBox.classList.remove("hidden");
+            } else {
+                customCpmBox.classList.add("hidden");
+            }
+
+            // Extract CPM Targets
+            let dedicatedCPM = 0;
+            let mainCPM = 0;
+            let secondaryCPM = 0;
+
+            if (nicheKey === "custom") {
+                dedicatedCPM = parseFloat(inputCustomCpm.value) || 30;
+                mainCPM = parseFloat(inputCustomMainCpm.value) || 20;
+                secondaryCPM = Math.round(mainCPM * 0.45);
+            } else {
+                const preset = CPM_PRESETS[nicheKey];
+                dedicatedCPM = preset.dedicated;
+                mainCPM = preset.main;
+                secondaryCPM = preset.secondary;
+            }
+
+            // Core Formula Calculations
+            const estimatedOpens = Math.round(subs * (openRate / 100));
+
+            // Price per ad placement = (Opens * CPM) / 1000
+            const priceDedicated = Math.round((estimatedOpens * dedicatedCPM) / 1000);
+            const priceMain = Math.round((estimatedOpens * mainCPM) / 1000);
+            const priceSecondary = Math.round((estimatedOpens * secondaryCPM) / 1000);
+
+            // Estimated Monthly / Annual Revenue Calculations
+            // Assuming primary main sponsor + optional secondary sponsor fill
+            const avgAdPrice = slotsPerIssue > 1 ? Math.round((priceMain + priceSecondary) / 2) : priceMain;
+            const monthlyRevenue = avgAdPrice * slotsPerIssue * issuesPerMonth;
+            const annualRevenue = monthlyRevenue * 12;
+            const valuePerSub = (annualRevenue / subs).toFixed(2);
+
+            // Update DOM Elements
+            valSubsDisplay.textContent = subs.toLocaleString();
+            valOpenDisplay.textContent = `${openRate.toFixed(1)}%`;
+
+            statOpens.textContent = estimatedOpens.toLocaleString();
+            statCpm.textContent = `$${mainCPM.toFixed(2)}`;
+            statValSub.textContent = `$${valuePerSub} / yr`;
+
+            rateDedicated.textContent = `$${priceDedicated.toLocaleString()}`;
+            rateMain.textContent = `$${priceMain.toLocaleString()}`;
+            rateSecondary.textContent = `$${priceSecondary.toLocaleString()}`;
+
+            statAnnualRev.textContent = `$${annualRevenue.toLocaleString()}`;
+            summaryIssues.textContent = issuesPerMonth;
+            summarySlots.textContent = slotsPerIssue;
+
+            // Update Dynamic Chart
+            renderChart(subs, openRate, mainCPM, issuesPerMonth, slotsPerIssue);
+        };
+
+        // Chart Rendering Engine
+        const renderChart = (currentSubs, openRate, mainCPM, issuesPerMonth, slotsPerIssue) => {
+            const ctx = document.getElementById("growth-chart").getContext("2d");
+            const isDark = document.documentElement.classList.contains("dark");
+
+            // Generate 5 Milestone Data Points
+            const milestones = [
+                Math.round(currentSubs * 0.5),
+                currentSubs,
+                Math.round(currentSubs * 1.5),
+                Math.round(currentSubs * 2.0),
+                Math.round(currentSubs * 3.0)
+            ];
+
+            const labels = milestones.map(m => m >= 1000 ? `${(m / 1000).toFixed(0)}k Subs` : `${m} Subs`);
+            const dataPoints = milestones.map(m => {
+                const opens = m * (openRate / 100);
+                const adPrice = (opens * mainCPM) / 1000;
+                return Math.round(adPrice * slotsPerIssue * issuesPerMonth * 12); // Annual Revenue
+            });
+
+            if (growthChart) {
+                growthChart.destroy();
+            }
+
+            growthChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Annual Sponsorship Potential ($)',
+                        data: dataPoints,
+                        borderColor: '#6366f1',
+                        backgroundColor: 'rgba(99, 102, 241, 0.15)',
+                        fill: true,
+                        tension: 0.4,
+                        borderWidth: 3,
+                        pointRadius: 4,
+                        pointBackgroundColor: '#6366f1'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: (context) => `Annual Rev: $${context.parsed.y.toLocaleString()}`
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: { display: false },
+                            ticks: { color: isDark ? '#9ca3af' : '#4b5563', font: { size: 10 } }
+                        },
+                        y: {
+                            grid: { color: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)' },
+                            ticks: { 
+                                color: isDark ? '#9ca3af' : '#4b5563', 
+                                font: { size: 10 },
+                                callback: (val) => `$${val >= 1000 ? (val/1000).toFixed(0) + 'k' : val}`
+                            }
+                        }
+                    }
+                }
+            });
+        };
+
+        const updateChartTheme = () => {
+            calculateRates();
+        };
+
+        // Event Listeners Binding
+        const inputs = [sliderSubs, sliderOpen, selectNiche, inputFreq, inputSlots, inputCustomCpm, inputCustomMainCpm];
+        inputs.forEach(el => el.addEventListener("input", calculateRates));
+
+        btnReset.addEventListener("click", () => {
+            sliderSubs.value = 25000;
+            sliderOpen.value = 45;
+            selectNiche.value = "tech_finance";
+            inputFreq.value = 4;
+            inputSlots.value = 2;
+            inputCustomCpm.value = 45;
+            inputCustomMainCpm.value = 30;
+            calculateRates();
+            triggerToast("Calculator reset to defaults.", "🔄");
+        });
+
+        // Clipboard Rate Card Copy Engine
+        btnCopy.addEventListener("click", () => {
+            const subs = parseInt(sliderSubs.value).toLocaleString();
+            const openRate = parseFloat(sliderOpen.value).toFixed(1);
+            const opens = statOpens.textContent;
+            const dedicated = rateDedicated.textContent;
+            const main = rateMain.textContent;
+            const secondary = rateSecondary.textContent;
+            const annual = statAnnualRev.textContent;
+
+            const markdown = `### 📊 Media Kit & Sponsorship Rate Card
+*   **Active Subscribers:** ${subs}
+*   **Average Open Rate:** ${openRate}% (~${opens} Opens / Issue)
+
+#### 💰 Sponsorship Pricing Tiers:
+*   **Dedicated Email Blast (100% SOV):** ${dedicated} / issue
+*   **Primary Main Sponsor (Header + Logo):** ${main} / issue
+*   **Secondary Insert (Footer Text/Link):** ${secondary} / issue
+
+*Projected Annual Ad Inventory Value: ${annual}*`;
+
+            try {
+                const textarea = document.createElement("textarea");
+                textarea.value = markdown;
+                textarea.style.position = "fixed";
+                textarea.style.opacity = "0";
+                document.body.appendChild(textarea);
+                textarea.select();
+                const success = document.execCommand('copy');
+                document.body.removeChild(textarea);
+
+                if (success) {
+                    triggerToast("Rate Card Copied to Clipboard!");
+                } else {
+                    throw new Error("Copy command failed");
+                }
+            } catch (err) {
+                console.error("Clipboard write error: ", err);
+                triggerToast("Copy failed. Please copy manually.", "⚠️");
+            }
+        });
+
+        // Initial Calculation Pass on Page Load
+        window.addEventListener("DOMContentLoaded", calculateRates);
+    </script>
+</body>
+</html>
